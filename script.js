@@ -209,6 +209,9 @@ class Dial {
   }
 }
 
-const containers = document.getElementsByClassName("chart");
-const dial = new Dial(containers[0]);
-dial.animateStart();
+const progress1 = document.getElementsByClassName("chart1");
+const progress2 = document.getElementsByClassName("chart2");
+const dial1 = new Dial(progress1[0]);
+const dial2 = new Dial(progress2[0]);
+dial1.animateStart();
+dial2.animateStart();
