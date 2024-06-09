@@ -1,11 +1,18 @@
 class Dial {
-  constructor(container) {
+  constructor(container, gradientColors, backgroundColors) {
     this.container = container;
     this.size = this.container.dataset.size;
     this.strokeWidth = this.size / 8;
     this.radius = this.size / 2 - this.strokeWidth / 2;
     this.value = parseFloat(this.container.dataset.value);
     this.direction = this.container.dataset.arrow;
+    this.gradientColors = gradientColors || ["red", "blue", "green", "yellow"];
+    this.backgroundColors = backgroundColors || [
+      "rgba(0,0,0,0.2)",
+      "rgba(0,0,0,0.2)",
+    ];
+
+    this.uniqueId = Math.random().toString(36).substr(2, 9); // Crea un id unico
     this.svg;
     this.defs;
     this.slice;
@@ -22,7 +29,6 @@ class Dial {
     this.createOverlay();
     this.createText();
     this.createArrow();
-
     this.container.appendChild(this.svg);
   }
 
@@ -33,51 +39,36 @@ class Dial {
   }
 
   createDefs() {
-    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"),
-      linearGradient = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "linearGradient"
-      ),
-      stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
-      stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
-      stop3 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
-      linearGradientBackground = document.createElementNS(
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+    const createGradient = (id, colors) => {
+      const gradient = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "linearGradient"
       );
+      gradient.setAttribute("id", id);
 
-    linearGradient.setAttribute("id", "linearGradient");
-    // colore gradiente 1
-    stop1.setAttribute("stop-color", "#fc0303");
-    stop1.setAttribute("offset", "0%");
-    // colore gradiente 2
-    stop2.setAttribute("stop-color", "#03fc07");
-    stop2.setAttribute("offset", "50%");
-    // colore gradiente 3
-    stop3.setAttribute("stop-color", "#031cfc");
-    stop3.setAttribute("offset", "100%");
+      colors.forEach((color, index) => {
+        const stop = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "stop"
+        );
+        stop.setAttribute("stop-color", color);
+        stop.setAttribute("offset", `${(index / (colors.length - 1)) * 100}%`);
+        gradient.appendChild(stop);
+      });
 
-    linearGradient.appendChild(stop1);
-    linearGradient.appendChild(stop2);
-    linearGradient.appendChild(stop3);
+      return gradient;
+    };
 
-    linearGradientBackground.setAttribute("id", "gradient-background");
-    // gradient background 1
-    stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-    stop1.setAttribute("stop-color", "rgba(255,255,255,0.8)");
-    stop1.setAttribute("offset", "0%");
-    // gradient background 2
-    stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-    stop2.setAttribute("stop-color", "rgba(0,0,0,0)");
-    stop2.setAttribute("offset", "50%");
-    // gradient background 3
-    stop3 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-    stop3.setAttribute("stop-color", "rgba(0,10,10,0.8)");
-    stop3.setAttribute("offset", "100%");
-
-    linearGradientBackground.appendChild(stop1);
-    linearGradientBackground.appendChild(stop2);
-    linearGradientBackground.appendChild(stop3);
+    const linearGradient = createGradient(
+      `linearGradient-${this.uniqueId}`,
+      this.gradientColors
+    );
+    const linearGradientBackground = createGradient(
+      `gradient-background-${this.uniqueId}`,
+      this.backgroundColors
+    );
 
     defs.appendChild(linearGradient);
     defs.appendChild(linearGradientBackground);
@@ -88,7 +79,7 @@ class Dial {
   createSlice() {
     let slice = document.createElementNS("http://www.w3.org/2000/svg", "path");
     slice.setAttribute("fill", "none");
-    slice.setAttribute("stroke", "url(#linearGradient)");
+    slice.setAttribute("stroke", `url(#linearGradient-${this.uniqueId})`);
     slice.setAttribute("stroke-width", this.strokeWidth);
     slice.setAttribute(
       "transform",
@@ -105,11 +96,10 @@ class Dial {
       "http://www.w3.org/2000/svg",
       "circle"
     );
-    // posizione overlay
     circle.setAttribute("cx", this.size / 2);
     circle.setAttribute("cy", this.size / 2);
     circle.setAttribute("r", r);
-    circle.setAttribute("fill", "url(#gradient-background)");
+    circle.setAttribute("fill", `url(#gradient-background-${this.uniqueId})`);
     circle.setAttribute("class", "animate-draw");
     this.svg.appendChild(circle);
     this.overlay = circle;
@@ -209,9 +199,20 @@ class Dial {
   }
 }
 
-const progress1 = document.getElementsByClassName("chart1");
-const progress2 = document.getElementsByClassName("chart2");
-const dial1 = new Dial(progress1[0]);
-const dial2 = new Dial(progress2[0]);
+// Usage example
+const progress1 = document.getElementsByClassName(`chart1`);
+const progress2 = document.getElementsByClassName(`chart2`);
+
+const dial1 = new Dial(
+  progress1[0],
+  ["red", "blue", "green"],
+  ["rgba(255,255,255,0.5)", "rgba(0,0,0,0.5)", "rgba(0,0,0,1)"]
+);
+const dial2 = new Dial(
+  progress2[0],
+  ["gold", "purple"],
+  ["rgba(255,255,255,0.5)", "rgba(0,0,0,0.5)", "rgba(0,0,0,1)"]
+);
+
 dial1.animateStart();
 dial2.animateStart();
