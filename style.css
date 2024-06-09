@@ -1,0 +1,16 @@
+body {
+  background: #18222f;
+}
+
+.wrapper {
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: top;
+}
+
+.container {
+  font: 1px;
+  padding: 0 20px;
+}
