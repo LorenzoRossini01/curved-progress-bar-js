@@ -33,35 +33,51 @@ class Dial {
   }
 
   createDefs() {
-    var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"),
+    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"),
       linearGradient = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "linearGradient"
       ),
       stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
       stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
+      stop3 = document.createElementNS("http://www.w3.org/2000/svg", "stop"),
       linearGradientBackground = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "linearGradient"
       );
 
     linearGradient.setAttribute("id", "linearGradient");
-    stop1.setAttribute("stop-color", "#ffa000");
+    // colore gradiente 1
+    stop1.setAttribute("stop-color", "#fc0303");
     stop1.setAttribute("offset", "0%");
-    stop2.setAttribute("stop-color", "#ff4500");
-    stop2.setAttribute("offset", "100%");
+    // colore gradiente 2
+    stop2.setAttribute("stop-color", "#03fc07");
+    stop2.setAttribute("offset", "50%");
+    // colore gradiente 3
+    stop3.setAttribute("stop-color", "#031cfc");
+    stop3.setAttribute("offset", "100%");
+
     linearGradient.appendChild(stop1);
     linearGradient.appendChild(stop2);
+    linearGradient.appendChild(stop3);
 
     linearGradientBackground.setAttribute("id", "gradient-background");
+    // gradient background 1
     stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-    stop1.setAttribute("stop-color", "rgba(0,0,0,0.2)");
+    stop1.setAttribute("stop-color", "rgba(255,255,255,0.8)");
     stop1.setAttribute("offset", "0%");
+    // gradient background 2
     stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-    stop2.setAttribute("stop-color", "rgba(0,0,0,0.5)");
-    stop2.setAttribute("offset", "100%");
+    stop2.setAttribute("stop-color", "rgba(0,0,0,0)");
+    stop2.setAttribute("offset", "50%");
+    // gradient background 3
+    stop3 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+    stop3.setAttribute("stop-color", "rgba(0,10,10,0.8)");
+    stop3.setAttribute("offset", "100%");
+
     linearGradientBackground.appendChild(stop1);
     linearGradientBackground.appendChild(stop2);
+    linearGradientBackground.appendChild(stop3);
 
     defs.appendChild(linearGradient);
     defs.appendChild(linearGradientBackground);
@@ -89,6 +105,7 @@ class Dial {
       "http://www.w3.org/2000/svg",
       "circle"
     );
+    // posizione overlay
     circle.setAttribute("cx", this.size / 2);
     circle.setAttribute("cy", this.size / 2);
     circle.setAttribute("r", r);
@@ -103,9 +120,10 @@ class Dial {
     let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", this.size / 2);
     text.setAttribute("y", this.size / 2 + fontSize / 4);
-    text.setAttribute("font-family", "Century Gothic, Lato");
+    text.setAttribute("font-family", "Roboto");
     text.setAttribute("font-size", fontSize);
-    text.setAttribute("fill", "#78f8ec");
+    text.setAttribute("font-weight", 600);
+    text.setAttribute("fill", "#ffffff");
     text.setAttribute("text-anchor", "middle");
     text.innerHTML = `${0}%`;
     this.svg.appendChild(text);
@@ -113,13 +131,13 @@ class Dial {
   }
 
   createArrow() {
-    var arrowSize = this.size / 10;
-    var mapDir = {
+    let arrowSize = this.size / 10;
+    let mapDir = {
       up: [arrowSize / 2, -1],
       down: [-arrowSize / 2, 1],
     };
-    var [arrowYOffset, m] = mapDir[this.direction] || [0, 0];
-    var arrowPosX = this.size / 2 - arrowSize / 2,
+    let [arrowYOffset, m] = mapDir[this.direction] || [0, 0];
+    let arrowPosX = this.size / 2 - arrowSize / 2,
       arrowPosY = this.size - this.size / 3 + arrowYOffset,
       arrowDOffset = m * (arrowSize / 1.5),
       arrow = document.createElementNS("http://www.w3.org/2000/svg", "path");
